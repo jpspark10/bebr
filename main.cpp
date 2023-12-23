@@ -1,9 +1,12 @@
 #include <iostream>
 #include <string>
+#include <stdlib.h>
+#include <windows.h>
 
+template<typename T>
 class Recipe {
 public:
-    Recipe(const std::string& name) : name_(name) {
+    Recipe(const T& name) : name_(name) {
         counter_++;
     }
 
@@ -16,83 +19,154 @@ public:
     }
 
 protected:
-    std::string name_;
+    T name_;
 
 private:
     static int counter_;
 };
 
-int Recipe::counter_ = 0;
+template<typename T>
+int Recipe<T>::counter_ = 0;
 
-class Pastry : public Recipe {
+template<typename T>
+class Pastry : public Recipe<T> {
 public:
-    Pastry(const std::string& name, const std::string& filling) : Recipe(name), filling_(filling) {}
+    Pastry(const T& name, const T& filling) : Recipe<T>(name), filling_(filling) {}
 
     void showInformation() const override {
-        std::cout << "Recipe for pastry: " << name_ << std::endl;
+        std::cout << "-----Recipe Info:-----" << std::endl;
+        std::cout << "Recipe for pastry: " << this->name_ << std::endl;
         std::cout << "Filling: " << filling_ << std::endl;
+        std::cout << "---------------------" << std::endl;
+        Sleep(2000);
+        printf("\e[1;1H\e[2J");
     }
 
     void cook() const override {
-        std::cout << "Cooking pastry: " << name_ << std::endl;
+        std::cout << "Cooking pastry: " << this->name_ << std::endl;
+        Sleep(1000);
         std::cout << "Adding filling: " << filling_ << std::endl;
+        Sleep(1000);
         std::cout << "Baking in the oven" << std::endl;
+        Sleep(1000);
+        printf("\e[1;1H\e[2J");
     }
 
 private:
-    std::string filling_;
+    T filling_;
 };
 
-class Salad : public Recipe {
+template<typename T>
+class Salad : public Recipe<T> {
 public:
-    Salad(const std::string& name, const std::string& base) : Recipe(name), base_(base) {}
+    Salad(const T& name, const T& base) : Recipe<T>(name), base_(base) {}
 
     void showInformation() const override {
-        std::cout << "Recipe for salad: " << name_<< std::endl;
+        std::cout << "-----Recipe Info:-----" << std::endl;
+        std::cout << "Recipe for salad: " << this->name_ << std::endl;
         std::cout << "Base: " << base_ << std::endl;
+        std::cout << "---------------------" << std::endl;
+        Sleep(3000);
+        printf("\e[1;1H\e[2J");
     }
 
     void cook() const override {
-        std::cout << "Cooking salad: " << name_<< std::endl;
+        std::cout << "Cooking salad: " << this->name_ << std::endl;
+        Sleep(1000);
         std::cout << "Using base: " << base_ << std::endl;
+        Sleep(1000);
         std::cout << "Adding vegetables and dressing" << std::endl;
+        Sleep(1000);
+        printf("\e[1;1H\e[2J");
     }
 
 private:
-    std::string base_;
+    T base_;
 };
 
-template <typename T>
-class Drink : public Recipe {
+template<typename T, typename U>
+class Drink : public Recipe<T> {
 public:
-    Drink(const std::string& name, const std::string& ingredient) : Recipe(name), ingredient_(ingredient) {}
+    Drink(const T& name, const U& ingredient) : Recipe<T>(name), ingredient_(ingredient) {}
 
     void showInformation() const override {
-        std::cout << "Recipe for drink: " << name_ << std::endl;
+        std::cout << "-----Recipe Info-----" << std::endl;
+        std::cout << "Recipe for drink: " << this->name_ << std::endl;
         std::cout << "Ingredient: " << ingredient_ << std::endl;
+        std::cout << "---------------------" << std::endl;
+        Sleep(3000);
+        printf("\e[1;1H\e[2J");
     }
 
     void cook() const override {
-        std::cout << "Cooking drink: " << name_<< std::endl;
+        std::cout << "Cooking drink: " << this->name_ << std::endl;
+        Sleep(1000);
         std::cout << "Using ingredient: " << ingredient_ << std::endl;
+        Sleep(1000);
         std::cout << "Mixing and cooling" << std::endl;
+        Sleep(1000);
+        printf("\e[1;1H\e[2J");
     }
 
 private:
-    std::string ingredient_;
+    U ingredient_;
 };
 
 int main() {
-    Pastry pastry("Sharlotka", "bebra");
-    Salad salad("Greek salad", "Lettuce");
-    Drink<std::string> drink("Lemonade", "Lemon juice");
+    int choice;
+    std::string recipeName;
+    std::string ingredient;
+    while (true){
+        std::cout << "Number of created recipes: " << Recipe<std::string>::getCount() << std::endl;
+        std::cout << "What type of Recipe do u wanna to create? ;)\n"
+                  << "\t 1 - Pastry\n"
+                  << "\t 2 - Salad\n"
+                  << "\t 3 - Drink\n";
+        std::cin >> choice;
+        printf("\e[1;1H\e[2J");
+        switch (choice){
+        case 1:{
+                std::cout << "Enter pastry name and ingredient:\n";
+                std::cout << "Pastry name: \n" ;
+                std::cin >> recipeName;
+                std::cout << "Ingredient name:\n";
+                std::cin >> ingredient;
+                Pastry<std::string> pastry(recipeName, ingredient);
+                pastry.cook();
+                pastry.showInformation();
+        }break;
+
+        case 2:{
+                std::cout << "Enter salad name and ingredient:" << std::endl;
+                std::cout << "Salad name: " << std::endl;
+                std::cin >> recipeName;
+                std::cout << std::endl;
+                std::cout << "Ingredient name:" << std::endl;
+                std::cin >> ingredient;
+                std::cout << std::endl;
+                Salad <std::string> salad (recipeName,ingredient);
+                salad.cook();
+                salad.showInformation();
+        }break;
+        case 3:{
+            std::cout << "Enter drink name and ingredient:" << std::endl;
+            std::cout << "Drink name: " << std::endl;
+            std::cin >> recipeName;
+            std::cout << std::endl;
+            std::cout << "Ingredient name: " << std::endl;
+            std::cin >> ingredient;
+            std::cout << std::endl;
+            Drink <std::string,std::string> drink(recipeName,ingredient);
+            drink.cook();
+            drink.showInformation();
+        }break;
+        default:
+            std::cout << "Wrong choice =(" << std::endl;
+            break;
+        }
 
 
-    salad.showInformation();
-    salad.cook();
-
-
-    std::cout << "Number of created objects: " << Recipe::getCount() << std::endl;
+    }
 
     return 0;
 }
